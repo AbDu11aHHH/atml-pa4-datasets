@@ -1,6 +1,6 @@
 # ATML Programming Assignment 4 — Data Repository
 
-**This is a data-only repository.** It includes no solutions, model training pipelines, pruning/quantization implementations, attention operators, KV policies, LoRA-distillation implementations, or speculative decoders.
+**This is a data-only repository.** 
 
 ## Quick start: generate the missing datasets yourself
 
