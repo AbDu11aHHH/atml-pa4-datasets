@@ -2,7 +2,7 @@
 
 **This is a data-only repository.** 
 
-## Quick start: generate the missing datasets yourself
+## Quick start: generate the datasets
 
 Clone the repository. In a fresh Colab runtime or Python environment:
 
@@ -12,9 +12,9 @@ python scripts/setup_data.py --public
 python scripts/check_setup.py
 ```
 
-`--public` downloads the selected C4, WikiText-2, HellaSwag and GSM8K source rows and creates Qwen-tokenized windows for Task 1. It uses the **fixed row selections supplied in this repository**, not new random draws. On first execution it resolves each Hugging Face repository to a specific commit SHA and saves these in `data/local_source_revisions.json`. **Keep this file and report these revisions**; subsequent executions on that checkout use the saved commits. Internet access and Hugging Face access are necessary. C4 streaming may be slow, so start this preparation early.
+`--public` downloads the selected C4, WikiText-2, HellaSwag and GSM8K source rows and creates Qwen-tokenized windows for Task 1. It uses the **fixed row selections supplied in this repository**. On first execution it resolves each Hugging Face repository to a specific commit SHA and saves these in `data/local_source_revisions.json`. **Keep this file and report these revisions**; subsequent executions on that checkout use the saved commits. Internet access and Hugging Face access are necessary. C4 streaming may be slow, so start this preparation early.
 
-Task 2B evaluation and Task 2C retrieval files are **already in the repository**. No network access is needed for them.
+Task 2B evaluation and Task 2C retrieval files are **already in the repository**. 
 
 To generate common *teacher* and *original-student* prefix banks for Task 3, use a Colab T4 or another CUDA GPU:
 
@@ -25,8 +25,6 @@ python scripts/setup_data.py --prefix-banks
 This loads the pretrained Qwen models **one at a time** and produces fixed-seed, locally saved prefix sequences. It may require substantial generation time. The exact-speculative bank is **not provided**: generate that bank with your own Task 3 exact speculative decoder, and compare it with the teacher bank as a distributional correctness check. Similarly, trained-student prefixes must be generated with each student's trained adapters. Do **not** treat teacher and speculative prefix banks as distinct target distributions.
 
 To perform both steps in one CUDA runtime, run `python scripts/setup_data.py --all`. For a short smoke test, `--limit-prefix-prompts 2` is available; it does **not** generate a complete evaluation bank.
-
-**Reproducibility limitation:** Because the public repository contains fixed source *row selections* but not downloaded full text and the prefix bank is sampled on the student's GPU, independent checkouts can resolve different upstream revisions or produce slightly different stochastic sequences. If byte-for-byte identical inputs across students are essential, course staff must publish the materialized `data/public_locked/` and `data/prefix_banks/` directories and `data/local_source_revisions.json` once instead. Students should not compare aggregate results across different revision locks as if their inputs were identical.
 
 ## Provided data by task
 
@@ -54,5 +52,3 @@ Read `docs/DATA_FORMATS.md` for the JSONL schemas and `docs/REPRODUCIBILITY.md` 
 ## Environment
 
 `transformers==4.57.1` and `huggingface_hub==0.36.2` are pinned for the Qwen cache interfaces. Install `torch` appropriate for your Colab/CUDA runtime. The data-only checks use Python standard library. The `setup_data.py` script requires `datasets`, `transformers` and `huggingface_hub`; model-prefix generation also requires PyTorch and CUDA.
-
-This self-service materialization has not been end-to-end tested against live Hugging Face downloads in the packaging environment. If a public dataset becomes unavailable, do not substitute another source or split without an announced course-wide update.
